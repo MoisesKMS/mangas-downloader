@@ -9,7 +9,8 @@ headers = {
     "user-agent" : "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.41 YaBrowser/21.5.0.582 Yowser/2.5 Safari/537.36"
 }
 
-chapterId = "https://yugenmangas.com/no-quise-seducir-al-protagonista-masculino-capitulo-0/"
+print('Ingresa una url para descargar el capitulo')
+chapterId = input()
 
 url = chapterId;
 
@@ -29,17 +30,28 @@ imgContainer = convjson_process2.replace('\\', '')
 
 
 #get chapter script container
-print(imgContainer)
-
+jsonContainer = json.loads(imgContainer)
+# print(imgContainer)
+# print(jsonContainer['sources'][0]['images'])
 
 
 
 ### Donwload Images ###
 
 # path = "C:\\Users\ScarKMS\\Desktop\\imgdownloaded\\"
-path = "./Downloads/"
-images = ["https://i1.wp.com/i.ibb.co/qRsL2bR/0-No-Quise-Seducir-Al-protagonista.jpg","https://i0.wp.com/i.ibb.co/qyGskmP/page001.jpg","https://i0.wp.com/i.ibb.co/fF6fQqr/page002.jpg","https://i0.wp.com/i.ibb.co/YkgF6K7/page003.jpg","https://i0.wp.com/i.ibb.co/bbF82N9/page004.jpg"]
-numberCount = -1
+contentNameSerie = soup.find('div', class_="allc")
+nameSerie = contentNameSerie.find('a').text
+nameChapter = soup.find('h1', class_="entry-title").text
+
+#chapter name
+# str(soup.find('h1', class_="entry-title").text)
+
+#get Chapter Number
+contentChapterNumber = soup.find('selected', {"id":"chapter"})
+
+path = "./Downloads/" + str(nameSerie) + "/" + str(nameChapter) + "/"
+images = jsonContainer['sources'][0]['images']
+numberCount = 0
 
 def download(url, pathname, imageNumber):
     # if path doesn't exist, make that path dir
