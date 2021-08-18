@@ -1,20 +1,36 @@
-import requests
 from bs4 import BeautifulSoup
+import motor
 
-headers = {
-    "user-agent" : "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.41 YaBrowser/21.5.0.582 Yowser/2.5 Safari/537.36"
-}
+headers = motor.headers()
 
 print('Ingresa la Url de una Serie')
 url = input()
 
-response = requests.get(url, headers=headers)
-response.encoding = 'utf-8'
+soup = motor.abrirEnlace(url)
 
-soup = BeautifulSoup(response.text, features='lxml')
+def getCapitulos():
+    contentListChapters = soup.find('div', class_='eplister')
+    listChapters = contentListChapters.findAll('li')
 
-contentListChapters = soup.find('div', class_='eplister')
-listChapters = contentListChapters.findAll('li');
+    for chapter in listChapters:
+        #get chapter titele
+        title = chapter.find('span', class_="chapternum")
+        textTitle = title.text.strip()
+        
+        #get upload date from chapter
+        date = chapter.find('span', class_="chapterdate")
+        chapterDate = date.text.strip()
+
+        #get url chapter
+        contentChapterUrl = chapter.find('a')
+        contentUrl = BeautifulSoup(str(contentChapterUrl), 'html.parser').a
+        urlChapter = contentUrl['href']
+        print()
+        print('Titulo del Capitulo: ' + textTitle)
+        print('Fecha de Subida: ' + chapterDate)
+        print('Url del Capitulo: ' + urlChapter)
+
+
 
 #obtener Imagen Cover
 contentImg = soup.find('div', class_="thumb")
@@ -30,28 +46,12 @@ description = ''
 for paragraph in contentParagraphs:
     process1 = str(paragraph).replace('<p>', '')
     process2 = process1.replace('</p>', '\n')
-    description = description + process2
+    process3 = process2.replace('<br/>', '\n')
+    description = description + process3
 
-print ('Descripcion: ', description)
+print ('Descripcion: ')
+print(description)
 
-for chapter in listChapters:
-    #get chapter titele
-    title = chapter.find('span', class_="chapternum")
-    textTitle = title.text.strip()
-    
-    #get upload date from chapter
-    date = chapter.find('span', class_="chapterdate")
-    chapterDate = date.text.strip()
-
-    #get url chapter
-    contentChapterUrl = chapter.find('a')
-    contentUrl = BeautifulSoup(str(contentChapterUrl), 'html.parser').a
-    urlChapter = contentUrl['href']
-    
-    print('Titulo del Capitulo: ' + textTitle)
-    print('Fecha de Subida: ' + chapterDate)
-    print('Url del Capitulo: ' + urlChapter)
-    print()
 
 
 #get generes
@@ -62,6 +62,7 @@ for genere in listGeneres:
     generes.append(str(genere.text))
 print('Generos: ', generes)
 
+# getCapitulos()
 
-print('Ultima vez actualizado: ', listChapters[0].find('span', class_="chapterdate").text)
-print('Capitulos:', len(listChapters))
+# print('Ultima vez actualizado: ', listChapters[0].find('span', class_="chapterdate").text)
+# print('Capitulos:', len(listChapters))
