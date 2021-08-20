@@ -1,16 +1,18 @@
 from bs4 import BeautifulSoup
 import motor
+import json
 
 headers = motor.headers()
-
-print('Ingresa la Url de una Serie')
 url = input()
-
 soup = motor.abrirEnlace(url)
 
 def getCapitulos():
+
     contentListChapters = soup.find('div', class_='eplister')
     listChapters = contentListChapters.findAll('li')
+    
+    jsonChapters = {}
+    jsonChapters['capitulos'] = []
 
     for chapter in listChapters:
         #get chapter titele
@@ -25,42 +27,45 @@ def getCapitulos():
         contentChapterUrl = chapter.find('a')
         contentUrl = BeautifulSoup(str(contentChapterUrl), 'html.parser').a
         urlChapter = contentUrl['href']
-        print()
-        print('Titulo del Capitulo: ' + textTitle)
-        print('Fecha de Subida: ' + chapterDate)
-        print('Url del Capitulo: ' + urlChapter)
+        
+        jsonChapters['capitulos'].append({
+            'tiutlo': str(textTitle),
+            'fecha': str(chapterDate),
+            'url': str(urlChapter)})
+
+    return jsonChapters
+
+def getImagen():
+    #obtener Imagen Cover
+    contentImg = soup.find('div', class_="thumb")
+    labelImg = BeautifulSoup(str(contentImg), 'html.parser').img
+    urlImg = str(labelImg['data-src']).strip()
+    return urlImg
+
+def getDescripcion():
+    contentDescription = soup.find('div', class_="entry-content entry-content-single")
+    contentParagraphs = contentDescription.find_all('p')
+    description = ''
+
+    for paragraph in contentParagraphs:
+        process1 = str(paragraph).replace('<p>', '')
+        process2 = process1.replace('</p>', '\n')
+        process3 = process2.replace('<br/>', '\n')
+        description = description + process3
+
+    return description
+
+def getGeneros():
+    contentGenres = soup.find('div', class_="seriestugenre")
+    listGenres =  contentGenres.find_all('a')
+    genres = []
+    for gender in listGenres:
+        genres.append(str(gender.text))
+    return genres
 
 
 
-#obtener Imagen Cover
-contentImg = soup.find('div', class_="thumb")
-labelImg = BeautifulSoup(str(contentImg), 'html.parser').img
-urlImg = str(labelImg['data-src']).strip()
-print('Url Imagen: ', urlImg)
-
-#Obtener Descripcion
-contentDescription = soup.find('div', class_="entry-content entry-content-single")
-contentParagraphs = contentDescription.find_all('p')
-description = ''
-
-for paragraph in contentParagraphs:
-    process1 = str(paragraph).replace('<p>', '')
-    process2 = process1.replace('</p>', '\n')
-    process3 = process2.replace('<br/>', '\n')
-    description = description + process3
-
-print ('Descripcion: ')
-print(description)
-
-
-
-#get generes
-contentGeneres = soup.find('div', class_="seriestugenre")
-listGeneres =  contentGeneres.find_all('a')
-generes = []
-for genere in listGeneres:
-    generes.append(str(genere.text))
-print('Generos: ', generes)
+# jsonCapitulos = getCapitulos()
 
 # getCapitulos()
 
