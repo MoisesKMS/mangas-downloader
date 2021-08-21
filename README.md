@@ -1,2 +1,2 @@
 # yugenmangas-scrapper
- API Scrapper para extraer series de yugenmangas.com
+Scrapper para extraer series de yugenmangas.com
