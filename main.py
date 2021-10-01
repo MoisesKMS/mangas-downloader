@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+import re
 
 headers = {
     "user-agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.41 YaBrowser/21.5.0.582 Yowser/2.5 Safari/537.36"
@@ -25,7 +26,7 @@ for serie in listaSeries:
         str(serie.find('img', class_='series-image')), 'html.parser').img
     urlImagen = contenedorImagen['src']
 
-    print(urlImagen)
+    print("Url de la Imagen: " + urlImagen)
 
     # obtener Nombre y Url de la serie
     contenedorPadre = serie.find('div', 'series-content')
@@ -35,7 +36,11 @@ for serie in listaSeries:
     contenedorTitulo = BeautifulSoup(
         str(contenedorPadre.find('h5')), 'html.parser').h5.text
 
-    print(enlace)
+    urlSerie = enlace.split('/')
+    urlSerie = "https://yugenmangas.com/series/" + urlSerie[4]
+
+    print("Url del ultimo capitulo: " + enlace)
+    print("Url de la Serie: " + urlSerie)
     # print(enlace[:enlace.index('/{3}?')])
-    print(contenedorTitulo)
+    print("Titulo de la Serie: " + contenedorTitulo)
     print()
