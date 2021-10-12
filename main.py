@@ -31,7 +31,8 @@ for serie in contenedorSeries:
     # url
     url = serie.find('a')['href'].split(
         '/')
-    url = url[0] + "//" + url[2] + "/" + url[3] + "/" + url[4]
+
+    url = f'{url[0]}//{url[2]}/{url[3]}/{url[4]}/'
 
     print(titulo)
     print(numeroCapitulo)
