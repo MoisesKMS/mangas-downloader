@@ -1,7 +1,4 @@
-import requests
-from bs4 import BeautifulSoup
 from Motor import Motor
-
 
 soup = Motor.navegar("https://yugenmangas.com/")
 
