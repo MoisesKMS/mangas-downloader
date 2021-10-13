@@ -10,6 +10,7 @@ for serie in contenedorSeries:
     url = f'{url[0]}//{url[2]}/{url[3]}/{url[4]}/'
 
     # nombre
+    # Se obtiene la url de la serie, se separa por '/' y despues la posicion que tiene el nombre se le remplazan los '-' por ' ', para tener un titulo agradable
     titulo = serie.find('a')['href'].split(
         '/')[4].replace('-', ' ').capitalize().strip()
 

@@ -75,7 +75,9 @@ print('Capitulos Encontrados: ', len(listaCapitulos))
 print()
 for capitulo in listaCapitulos:
     # Nombre del Capitulo
-    nombreCapitulo = capitulo.find('a').text.strip()
+    nombreCapitulo = str(capitulo.find('a'))
+    nombreCapitulo = nombreCapitulo[nombreCapitulo.index(
+        ';">') + 3: nombreCapitulo.index('<span')].strip()
 
     # Link de Capitulo
     urlCapitulo = capitulo.find('a')['href']
