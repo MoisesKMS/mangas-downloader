@@ -20,3 +20,20 @@ class Motor:
         # guardamos la respuesta de la solicitud en 'soup'
         soup = BeautifulSoup(response.text, features='lxml')
         return soup
+
+    def caracteresEspeciales(cadena):
+        # definimos los caracterres especiales que no queremos
+        lista = ['\\', '/', ':', '*', '?', '"', '<', '>', '|', '¿']
+        cadenaFinal = ''
+
+        for letra in cadena:
+            caracterIgual = False
+
+            for caracter in lista:
+                if(letra == caracter):
+                    caracterIgual = True
+
+            if(caracterIgual == False):
+                cadenaFinal += letra
+
+        return cadenaFinal
