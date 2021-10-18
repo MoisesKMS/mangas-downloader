@@ -1,3 +1,4 @@
+import time
 import os
 import os.path
 from tqdm import tqdm
@@ -90,6 +91,7 @@ def capitulos(listaC):
         except:
             listaErrores.append('Error al descargar:', nombreCapitulo)
             capitulosErroes.append(capitulo)
+            time.sleep(5)
 
 
 capitulos(listaCapitulos)
