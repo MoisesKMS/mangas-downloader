@@ -51,28 +51,53 @@ print('Titulo: ', titulo)
 listaCapitulos = soup.find_all('li', 'wp-manga-chapter')
 print('Capitulos Encontrados: ', len(listaCapitulos))
 print()
-for capitulo in reversed(listaCapitulos):
-    # Nombre del Capitulo
-    nombreCapitulo = str(capitulo.find('a'))
-    nombreCapitulo = nombreCapitulo[nombreCapitulo.index(
-        ';">') + 3: nombreCapitulo.index('<span')].strip()
 
-    # Link de Capitulo
-    urlCapitulo = capitulo.find('a')['href']
+listaErrores = []
+capitulosErroes = []
+contadorDescargados = 0
 
-    soup = Motor.navegar(urlCapitulo)
 
-    divPadre = soup.find('div', 'reading-content')
-    listaImagenes = divPadre.find_all('img')
+def capitulos(listaC):
+    for capitulo in reversed(listaC):
+        # Nombre del Capitulo
+        nombreCapitulo = str(capitulo.find('a'))
+        nombreCapitulo = nombreCapitulo[nombreCapitulo.index(
+            ';">') + 3: nombreCapitulo.index('<span')].strip()
 
-    print('Descargando: ', titulo, nombreCapitulo)
+        try:
+            # Link de Capitulo
+            urlCapitulo = capitulo.find('a')['href']
 
-    numberCount = 0
-    ruta = str("./descargas/" + titulo + "/" + nombreCapitulo.lower() + "/")
+            soup = Motor.navegar(urlCapitulo)
 
-    for imagen in listaImagenes:
-        urlImagen = imagen['data-src'].strip()
-        numberCount = numberCount + 1
-        descargar(urlImagen, ruta, numberCount)
+            divPadre = soup.find('div', 'reading-content')
+            listaImagenes = divPadre.find_all('img')
 
-    print()
+            print('Descargando: ', titulo, nombreCapitulo)
+
+            numberCount = 0
+            ruta = str("./descargas/" + titulo + "/" +
+                       nombreCapitulo.lower() + "/")
+
+            for imagen in listaImagenes:
+                urlImagen = imagen['data-src'].strip()
+                numberCount = numberCount + 1
+                descargar(urlImagen, ruta, numberCount)
+
+            contadorDescargados = contadorDescargados + 1
+            print()
+
+        except:
+            listaErrores.append('Error al descargar:', nombreCapitulo)
+            capitulosErroes.append(capitulo)
+
+
+capitulos(listaCapitulos)
+
+if(len(listaErrores) > 0):
+    for error in listaErrores:
+        print(error)
+    print('Se tratara de descargar la lista de capitulos con errores')
+    capitulos(capitulosErroes)
+
+print('Se descargaron:', len(contadorDescargados), 'Capitulos')
