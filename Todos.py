@@ -1,10 +1,12 @@
 import os
+import os.path
 from tqdm import tqdm
 import requests
 from Motor import Motor
 
 
 def descargar(url, pathname, imageNumber):
+
     # Si la ruta no existe, la creamos
     if not os.path.isdir(pathname):
         os.makedirs(pathname)
@@ -18,15 +20,21 @@ def descargar(url, pathname, imageNumber):
     # Asignamos el nombre a la imagen
     filename = os.path.join(pathname + str(imageNumber) + ".jpg")
 
-    # barra de progreso, cambiando la unidad a bytes (predeterminado por tqdm)
-    progress = tqdm(response.iter_content(
-        1024), f"Descargando {filename}", total=file_size, unit="B", unit_scale=True, unit_divisor=1024)
-    with open(filename, "wb") as f:
-        for data in progress.iterable:
-            # escribir datos leídos en el archivo
-            f.write(data)
-            # actualizar la barra de progreso manualmente
-            progress.update(len(data))
+    existe = os.path.isfile(filename)
+
+    if(existe == False):
+        # barra de progreso, cambiando la unidad a bytes (predeterminado por tqdm)
+        progress = tqdm(response.iter_content(
+            1024), f"Descargando {filename}", total=file_size, unit="B", unit_scale=True, unit_divisor=1024)
+        with open(filename, "wb") as f:
+            for data in progress.iterable:
+                # escribir datos leídos en el archivo
+                f.write(data)
+                # actualizar la barra de progreso manualmente
+                progress.update(len(data))
+
+    else:
+        print('El archivo ya estaba descargado')
 
 
 print('Ingresa la URL de una serie')
