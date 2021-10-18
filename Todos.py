@@ -4,6 +4,7 @@ import os.path
 from tqdm import tqdm
 import requests
 from Motor import Motor
+from plyer import notification
 
 
 def descargar(url, pathname, imageNumber):
@@ -55,11 +56,11 @@ print()
 
 listaErrores = []
 capitulosErroes = []
-contadorDescargados = 0
 
 
-def capitulos(listaC):
+def capitulos(listaC, error):
     for capitulo in reversed(listaC):
+
         # Nombre del Capitulo
         nombreCapitulo = str(capitulo.find('a'))
         nombreCapitulo = nombreCapitulo[nombreCapitulo.index(
@@ -84,9 +85,17 @@ def capitulos(listaC):
                 urlImagen = imagen['data-src'].strip()
                 numberCount = numberCount + 1
                 descargar(urlImagen, ruta, numberCount)
-
-            contadorDescargados = contadorDescargados + 1
             print()
+
+            if(error == True):
+                listaErrores.remove(capitulo)
+                time.sleep(5)
+
+            # mMensaje = str("Se descargo con existo: " + nombreCapitulo.lower())
+            # notification.notify(
+            #     title=nombreCapitulo,
+            #     app_icon='icon.ico',
+            #     message=mMensaje)
 
         except:
             listaErrores.append('Error al descargar:', nombreCapitulo)
@@ -94,12 +103,21 @@ def capitulos(listaC):
             time.sleep(5)
 
 
-capitulos(listaCapitulos)
+capitulos(listaCapitulos, False)
 
 if(len(listaErrores) > 0):
     for error in listaErrores:
         print(error)
     print('Se tratara de descargar la lista de capitulos con errores')
-    capitulos(capitulosErroes)
+    capitulos(capitulosErroes, True)
+    listaErrores = []
+    capitulosErroes = []
 
-print('Se descargaron:', len(contadorDescargados), 'Capitulos')
+notification.notify(
+    title=titulo,
+    message=str("¡Se descargaron todos los capitulos de " + titulo + "!"),
+    app_icon='icon.ico')
+print('Se descargaron:', len(listaCapitulos), 'Capitulos')
+print()
+print('Presione Cualquier tecla para salir')
+salir = input()
