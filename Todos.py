@@ -63,8 +63,13 @@ def capitulos(listaC, error):
 
         # Nombre del Capitulo
         nombreCapitulo = str(capitulo.find('a'))
-        nombreCapitulo = nombreCapitulo[nombreCapitulo.index(
+        
+        try:
+            nombreCapitulo = nombreCapitulo[nombreCapitulo.index(
             ';">') + 3: nombreCapitulo.index('<span')].strip()
+        except:
+            nombreCapitulo = nombreCapitulo[nombreCapitulo.index(
+            '/">') + 3: nombreCapitulo.index('</a>')].strip()
 
         try:
             # Link de Capitulo
