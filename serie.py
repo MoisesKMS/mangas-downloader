@@ -38,17 +38,19 @@ descripcion = divPadre.find('div', 'summary__content').text.strip()
 print('Descripcion: ', descripcion)
 print()
 
-# Generos
-divGeneros = divPadre.find('div', 'genres-content')
-generos = divGeneros.find_all('a')
+try:
+    # Generos
+    divGeneros = divPadre.find('div', 'genres-content')
+    generos = divGeneros.find_all('a')
 
-for genero in generos:
-    nombreGenero = genero.text
-    urlGenero = genero['href']
-    print('Genero: ', nombreGenero)
-    print('Enlace: ', urlGenero)
-
-print()
+    for genero in generos:
+        nombreGenero = genero.text
+        urlGenero = genero['href']
+        print('Genero: ', nombreGenero)
+        print('Enlace: ', urlGenero)
+    print()
+except:
+    print()
 
 
 ## Obtenemos el estado y la fecha busando todos los divs que tenga la clase sumary-content para despues iterar sobre ellos ##
@@ -68,7 +70,6 @@ except:
 
 print()
 
-
 # [Lista de Capitulos]
 listaCapitulos = soup.find_all('li', 'wp-manga-chapter')
 print('Capitulos Encontrados: ', len(listaCapitulos))
@@ -78,6 +79,8 @@ for capitulo in listaCapitulos:
     nombreCapitulo = str(capitulo.find('a'))
     nombreCapitulo = nombreCapitulo[nombreCapitulo.index(
         ';">') + 3: nombreCapitulo.index('<span')].strip()
+    nombreCapitulo = nombreCapitulo[nombreCapitulo.index(
+        '>')+1: nombreCapitulo.index('</p>')].strip()
 
     # Link de Capitulo
     urlCapitulo = capitulo.find('a')['href']
